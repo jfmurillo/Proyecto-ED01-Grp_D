@@ -1,21 +1,21 @@
-#ifndef TIMER_H
-#define TIMER_H
+// #ifndef TIMER_H
+// #define TIMER_H
 
-#include <chrono> 
+// #include <chrono> 
 
-class Timer {
-private:
-    std::chrono::time_point<std::chrono::steady_clock> startTime;
-    int timeLimit; 
-    bool running; 
+// class Timer {
+// private:
+//     std::chrono::time_point<std::chrono::steady_clock> startTime;
+//     int timeLimit; 
+//     bool running; 
 
-public:
-    Timer();
+// public:
+//     Timer();
 
-    void setTimeLimit(int seconds);
-    void startTimer();
-    void stopTimer();
-    bool isTimeExceeded() const;
-};
+//     void setTimeLimit(int seconds);
+//     void startTimer();
+//     void stopTimer();
+//     bool isTimeExceeded() const;
+// };
 
-#endif
+// #endif

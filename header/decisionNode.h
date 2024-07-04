@@ -1,20 +1,20 @@
-#ifndef DECISIONNODE_H
-#define DECISIONNODE_H
+// #ifndef DECISIONNODE_H
+// #define DECISIONNODE_H
 
-#include <map>
-#include <string>
+// #include <map>
+// #include <string>
 
-class DecisionNode
-{
-public:
-  char key;
-  std::string action;
-  std::map<char, DecisionNode *> children;
+// class DecisionNode
+// {
+// public:
+//   char key;
+//   std::string action;
+//   std::map<char, DecisionNode *> children;
 
-  DecisionNode(char key);
-  DecisionNode();
+//   DecisionNode(char key);
+//   DecisionNode();
 
-  ~DecisionNode();
-};
+//   ~DecisionNode();
+// };
 
-#endif
+// #endif

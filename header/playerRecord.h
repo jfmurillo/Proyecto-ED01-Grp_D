@@ -1,20 +1,20 @@
-#ifndef PLAYER_RECORD_H
-#define PLAYER_RECORD_H
+// #ifndef PLAYER_RECORD_H
+// #define PLAYER_RECORD_H
 
-#include "Player.h"
-#include <vector>
+// #include "Player.h"
+// #include <vector>
 
-class PlayerRecord {
-private:
-    std::vector<Player> players;
+// class PlayerRecord {
+// private:
+//     std::vector<Player> players;
 
-public:
-    PlayerRecord();
+// public:
+//     PlayerRecord();
 
-    void createPlayerRecord();
-    void registerPlayer(const Player& player);
-    void deletePlayer(int playerID);
-    void showPlayerRecord() const;
-};
+//     void createPlayerRecord();
+//     void registerPlayer(const Player& player);
+//     void deletePlayer(int playerID);
+//     void showPlayerRecord() const;
+// };
 
-#endif 
+// #endif 
