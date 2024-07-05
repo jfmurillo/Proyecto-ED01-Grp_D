@@ -10,31 +10,31 @@ using std::list;
 using std::string;
 using std::vector;
 
-class Timer{
+class Timer {
   private:
-  std::chrono::time_point<std::chrono::steady_clock> startTime;
-  std::chrono::time_point<std::chrono::steady_clock> endTime;
-  int timeLimitSeconds;
-  bool running;
+    std::chrono::time_point<std::chrono::steady_clock> startTime;
+    std::chrono::time_point<std::chrono::steady_clock> endTime;
+    int timeLimitSeconds;
+    bool running;
 
   public:
-  Timer():timeLimitSeconds(0), running(false){}
+    Timer() : timeLimitSeconds(0), running(false) {}
 
-  void setTimeLimit(int seconds){
-    timeLimitSeconds = seconds;
-  }
+    void setTimeLimit(int seconds) {
+        timeLimitSeconds = seconds;
+    }
 
-  void startTimer(){
-    startTime = std::chrono::steady_clock::now();
-    running = true;
-  }
+    void startTimer() {
+        startTime = std::chrono::steady_clock::now();
+        running = true;
+    }
 
-  void stopTimer(){
-    endTime = std::chrono::steady_clock::now();
-    running = false;
-  }
+    void stopTimer() {
+        endTime = std::chrono::steady_clock::now();
+        running = false;
+    }
 
-  bool isTimeExceeded() {
+    bool isTimeExceeded() {
         if (running) {
             auto currentTime = std::chrono::steady_clock::now();
             std::chrono::duration<double> elapsedSeconds = currentTime - startTime;
@@ -52,15 +52,15 @@ class Timer{
     }
 };
 
-class Player{
-  private:
+class Player {
+private:
     string nickname;
     string name;
     string lastName;
     string email;
     int age;
 
-  public:
+public:
     Player(string nickname, string name, string lastName, string email, int age)
         : nickname(nickname), name(name), lastName(lastName), email(email), age(age) {}
 
@@ -75,75 +75,75 @@ class Player{
     void setEmail(const string &email) { this->email = email; }
     void setAge(int age) { this->age = age; }
 
-    void displayPlayer() const{
-      std::cout << "ID: " << nickname << ", Name: " << name << ", Last Name: " << lastName
-                << ", Email: " << email << ", Age: " << age << std::endl;
+    void displayPlayer() const {
+        std::cout << "ID: " << nickname << ", Name: " << name << ", Last Name: " << lastName
+                  << ", Email: " << email << ", Age: " << age << std::endl;
     }
 
-    Player getPlayerbyID(string nickname){
-      std::cout << "Please enter player nickname: ";
-      return *this;
+    Player getPlayerbyID(string nickname) {
+        std::cout << "Please enter player nickname: ";
+        return *this;
     }
 
-    Player modifyPlayer(string nickname){
-
-      return *this;
-    };
+    Player modifyPlayer(string nickname) {
+        return *this;
+    }
 };
 
-class PlayerRecord{
+class PlayerRecord {
 private:
-  list<Player> players;
+    list<Player> players;
 
 public:
-  void registerPlayer(const Player player){
-    players.push_back(player);
-  }
-
-  bool deletePlayer(string nickname){
-    for (auto i = players.begin(); i != players.end(); ++i){
-      if (i->getNickName() == nickname){
-        players.erase(i);
-        return true;
-      }
+    void registerPlayer(const Player player) {
+        players.push_back(player);
     }
-    std::cout << "Player not found" << std::endl;
-    return false;
-  }
 
-  void showPlayerRecord() const{
-    if (players.empty()){
-      std::cout << "No players registered." << std::endl;
-      return;
+    bool deletePlayer(string nickname) {
+        for (auto i = players.begin(); i != players.end(); ++i) {
+            if (i->getNickName() == nickname) {
+                players.erase(i);
+                return true;
+            }
+        }
+        std::cout << "Player not found" << std::endl;
+        return false;
     }
-    for (const auto &player : players){
-      player.displayPlayer();
+
+    void showPlayerRecord() const {
+        if (players.empty()) {
+            std::cout << "No players registered." << std::endl;
+            return;
+        }
+        for (const auto &player : players) {
+            player.displayPlayer();
+        }
     }
-  }
 
-  int findPlayerById(string nickname) const{
-    auto i = find_if(players.begin(), players.end(), [nickname](const Player &player)
-                     { return player.getNickName() == nickname; });
+    int findPlayerById(string nickname) const {
+        auto i = std::find_if(players.begin(), players.end(), [nickname](const Player &player) {
+            return player.getNickName() == nickname;
+        });
 
-    if (i != players.end()){
-      return distance(players.begin(), i);
+        if (i != players.end()) {
+            return std::distance(players.begin(), i);
+        }
+        std::cout << "Not found" << std::endl;
+        return -1;
     }
-    std::cout << "Not found" << std::endl;
-    return -1;
-  }
 
-  bool hasPlayers() const {
+    bool hasPlayers() const {
         return !players.empty();
     }
 };
 
-class Menu{
-  private:
-  PlayerRecord record;
+class Menu {
+private:
+    PlayerRecord record;
 
-  void newPlayerMenu(){
-    std::cout << "=== Register a New Player ===" << std::endl;
-        string nickname,name, lastName, email;
+    void newPlayerMenu() {
+        std::cout << "=== Register a New Player ===" << std::endl;
+        string nickname, name, lastName, email;
         int age;
 
         std::cout << "Enter nickname: ";
@@ -163,7 +163,7 @@ class Menu{
         std::cout << "Player registered successfully!" << std::endl;
     }
 
-    void existingPlayerMenu(){
+    void existingPlayerMenu() {
         std::cout << "=== Manage Existing Players ===" << std::endl;
         std::cout << "1. Show all players" << std::endl;
         std::cout << "2. Delete a player" << std::endl;
@@ -202,14 +202,14 @@ class Menu{
             }
             case 0:
                 return;
-            default:
+                default:
                 std::cout << "Invalid choice. Please try again." << std::endl;
         }
     }
 
-    public:
-    void showMenu(){
-      while (true) {
+public:
+    void showMenu() {
+        while (true) {
             std::cout << "=== Main Menu ===" << std::endl;
             std::cout << "1. Register New Player" << std::endl;
             std::cout << "2. Manage Existing Players" << std::endl;
@@ -218,70 +218,70 @@ class Menu{
             int choice;
             std::cin >> choice;
 
-            switch (choice){
-              case 1:
-                newPlayerMenu();
-                break;
-              case 2:
-                existingPlayerMenu();
-                break;
-              case 0:
-                std::cout << "Exiting program." << std::endl;
-                return;
-              default:
-                std::cout << "Invalid choice. Please try again." << std::endl;
-                break;
+            switch (choice) {
+                case 1:
+                    newPlayerMenu();
+                    break;
+                case 2:
+                    existingPlayerMenu();
+                    break;
+                case 0:
+                    std::cout << "Exiting program." << std::endl;
+                    return;
+                default:
+                    std::cout << "Invalid choice. Please try again." << std::endl;
+                    break;
+            }
         }
-      }
     }
 };
 
-class GameMenu{
+class GameMenu {
 private:
-  Timer time;
-  PlayerRecord record;
-  Menu mainMenu;
+    Timer time;
+    PlayerRecord record;
+    Menu mainMenu;
 
-  public:
-  void start(){
-    std::cout << "=== Starting Game ===" << std::endl;
-    std::cout << "Game started. Enjoy!" << std::endl;
-    
-    time.setTimeLimit(125);
-    time.startTimer();
-    std::cout << "Timer started: 2 minutes from now. GO!" << std::endl;
+public:
+    void start() {
+        std::cout << "=== Starting Game ===" << std::endl;
+        std::cout << "Game started. Enjoy!" << std::endl;
 
-    std::this_thread::sleep_for(std::chrono::seconds(126));
-    if (time.isTimeExceeded()){
-      std::cout << "Time limit exceeded!" << std::endl;
+        time.setTimeLimit(125);
+        time.startTimer();
+        std::cout << "Timer started: 2 minutes from now. GO!" << std::endl;
+
+        std::this_thread::sleep_for(std::chrono::seconds(126));
+        if (time.isTimeExceeded()) {
+            std::cout << "Time limit exceeded!" << std::endl;
+        }
+
+        time.stopTimer();
+
+        std::cout << "Elapsed time: " << time.getElapsedTime() << " seconds" << std::endl;
+
+        // falta el key input para las teclas y que vaya saliendo los combos que hace
     }
 
-    time.stopTimer();
-
-    std::cout << "Elapsed time: " << time.getElapsedTime() << " seconds" << std::endl;
-
-    // falta el key input para las teclas y que vaya saliendo loos combos que hace
-  }
-
-  void trainingMode() {
+    void trainingMode() {
         std::cout << "=== Training Mode ===" << std::endl;
         std::cout << "Training mode activated." << std::endl;
-        // mismo de start, pero aqui debe implementarse algun comando para salirse del modo training
+        // aqui se puede implementar algún comando para salir del modo training
         // y que vuelva al menu del juego
     }
 
     void exit() {
         std::cout << "Exiting the game menu." << std::endl;
-        // aqui se deberia de volver al menu de inicio? 
-        std::exit(0); // aqui es para terminar el programa pero idk
+        // aqui se deberia de volver al menu?, idk
+        std::exit(0);
     }
 
-    void showGameMenu(){
-      while (true) {
+    void showGameMenu() {
+        while (true) {
             std::cout << "=== Game Menu ===" << std::endl;
             std::cout << "1. Start Game" << std::endl;
             std::cout << "2. Training Mode" << std::endl;
-            std::cout << "3. Player Menu" << std::endl; 
+            std::cout << "3. Player Menu" << std::endl;
             std::cout << "0. Exit" << std::endl;
             std::cout << "Enter your choice: ";
             int choice;
@@ -317,12 +317,8 @@ private:
     }
 };
 
-
-
-
-
 int main() {
-  GameMenu gameMenu;
-  gameMenu.showGameMenu();
-  return 0;
-};
+    GameMenu gameMenu;
+    gameMenu.showGameMenu();
+    return 0;
+}
