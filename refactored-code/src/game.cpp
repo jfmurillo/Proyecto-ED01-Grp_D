@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <list>
 #include <iterator>
+#include <chrono>
 using std::list;
 using std::string;
 using std::vector;
@@ -261,7 +262,48 @@ private:
     }
 };
 
+class Timer{
+  private:
+  std::chrono::time_point<std::chrono::steady_clock> startTime;
+  std::chrono::time_point<std::chrono::steady_clock> endTime;
+  int timeLimitSeconds;
+  bool running;
 
+  public:
+  Timer():timeLimitSeconds(0), running(false){}
+
+  void setTimeLimit(int seconds){
+    timeLimitSeconds = seconds;
+  }
+
+  void startTimer(){
+    startTime = std::chrono::steady_clock::now();
+    running = true;
+  }
+
+  void stopTimer(){
+    endTime = std::chrono::steady_clock::now();
+    running = false;
+  }
+
+// estos metodos si los saque de gpt lol
+  bool isTimeExceeded() {
+        if (running) {
+            auto currentTime = std::chrono::steady_clock::now();
+            std::chrono::duration<double> elapsedSeconds = currentTime - startTime;
+            return elapsedSeconds.count() > timeLimitSeconds;
+        } else {
+            std::chrono::duration<double> elapsedSeconds = endTime - startTime;
+            return elapsedSeconds.count() > timeLimitSeconds;
+        }
+    }
+
+    double getElapsedTime() const {
+        auto currentTime = std::chrono::steady_clock::now();
+        std::chrono::duration<double> elapsedSeconds = currentTime - startTime;
+        return elapsedSeconds.count();
+    }
+};
 
 
 
