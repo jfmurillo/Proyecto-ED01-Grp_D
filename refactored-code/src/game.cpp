@@ -5,50 +5,90 @@
 #include <iterator>
 #include <chrono>
 #include <thread>
+#include <cstdlib>
 using std::list;
 using std::string;
 using std::vector;
 
+class Timer{
+  private:
+  std::chrono::time_point<std::chrono::steady_clock> startTime;
+  std::chrono::time_point<std::chrono::steady_clock> endTime;
+  int timeLimitSeconds;
+  bool running;
+
+  public:
+  Timer():timeLimitSeconds(0), running(false){}
+
+  void setTimeLimit(int seconds){
+    timeLimitSeconds = seconds;
+  }
+
+  void startTimer(){
+    startTime = std::chrono::steady_clock::now();
+    running = true;
+  }
+
+  void stopTimer(){
+    endTime = std::chrono::steady_clock::now();
+    running = false;
+  }
+
+  bool isTimeExceeded() {
+        if (running) {
+            auto currentTime = std::chrono::steady_clock::now();
+            std::chrono::duration<double> elapsedSeconds = currentTime - startTime;
+            return elapsedSeconds.count() > timeLimitSeconds;
+        } else {
+            std::chrono::duration<double> elapsedSeconds = endTime - startTime;
+            return elapsedSeconds.count() > timeLimitSeconds;
+        }
+    }
+
+    double getElapsedTime() const {
+        auto currentTime = std::chrono::steady_clock::now();
+        std::chrono::duration<double> elapsedSeconds = currentTime - startTime;
+        return elapsedSeconds.count();
+    }
+};
+
 class Player{
-private:
-  string nickname;
-  string name;
-  string lastName;
-  string email;
-  int age;
+  private:
+    string nickname;
+    string name;
+    string lastName;
+    string email;
+    int age;
 
-public:
-  Player(string nickname, string name, string lastName, string email, int age)
-      : nickname(nickname), name(name), lastName(lastName), email(email), age(age) {}
+  public:
+    Player(string nickname, string name, string lastName, string email, int age)
+        : nickname(nickname), name(name), lastName(lastName), email(email), age(age) {}
 
-  // getter
-  string getNickName() const { return nickname; }
-  string getName() const { return name; }
-  string getLastName() const { return lastName; }
-  string getEmail() const { return email; }
-  int getAge() const { return age; }
+    string getNickName() const { return nickname; }
+    string getName() const { return name; }
+    string getLastName() const { return lastName; }
+    string getEmail() const { return email; }
+    int getAge() const { return age; }
 
-  // setter
-  void setName(const string &name) { this->name = name; }
-  void setLastName(const string &lastName) { this->lastName = lastName; }
-  void setEmail(const string &email) { this->email = email; }
-  void setAge(int age) { this->age = age; }
+    void setName(const string &name) { this->name = name; }
+    void setLastName(const string &lastName) { this->lastName = lastName; }
+    void setEmail(const string &email) { this->email = email; }
+    void setAge(int age) { this->age = age; }
 
-  // methods
-  void displayPlayer() const{
-    std::cout << "ID: " << nickname << ", Name: " << name << ", Last Name: " << lastName
-              << ", Email: " << email << ", Age: " << age << std::endl;
-  }
+    void displayPlayer() const{
+      std::cout << "ID: " << nickname << ", Name: " << name << ", Last Name: " << lastName
+                << ", Email: " << email << ", Age: " << age << std::endl;
+    }
 
-  Player getPlayerbyID(string nickname){
-    std::cout << "Please enter player nickname: ";
-    return *this;
-  }
+    Player getPlayerbyID(string nickname){
+      std::cout << "Please enter player nickname: ";
+      return *this;
+    }
 
-  Player modifyPlayer(string nickname){
+    Player modifyPlayer(string nickname){
 
-    return *this;
-  };
+      return *this;
+    };
 };
 
 class PlayerRecord{
@@ -198,33 +238,34 @@ class Menu{
 
 class GameMenu{
 private:
+  Timer time;
   PlayerRecord record;
   Menu mainMenu;
 
   public:
-  Timer timer;
   void start(){
     std::cout << "=== Starting Game ===" << std::endl;
     std::cout << "Game started. Enjoy!" << std::endl;
     
-    timer.setTimeLimit(125);
+    time.setTimeLimit(125);
+    time.startTimer();
     std::cout << "Timer started: 2 minutes from now. GO!" << std::endl;
 
     std::this_thread::sleep_for(std::chrono::seconds(126));
-    if (timer.isTimeExceeded()){
+    if (time.isTimeExceeded()){
       std::cout << "Time limit exceeded!" << std::endl;
     }
 
-    timer.stopTimer();
+    time.stopTimer();
 
-    std::cout << "Elapsed time: " << timer.getElapsedTime() << " seconds" << std::endl;
+    std::cout << "Elapsed time: " << time.getElapsedTime() << " seconds" << std::endl;
 
     // falta el key input para las teclas y que vaya saliendo loos combos que hace
   }
 
   void trainingMode() {
         std::cout << "=== Training Mode ===" << std::endl;
-        std::cout << "Training mode activated. Practice makes perfect!" << std::endl;
+        std::cout << "Training mode activated." << std::endl;
         // mismo de start, pero aqui debe implementarse algun comando para salirse del modo training
         // y que vuelva al menu del juego
     }
@@ -275,63 +316,6 @@ private:
         }
     }
 };
-
-class Timer{
-  private:
-  std::chrono::time_point<std::chrono::steady_clock> startTime;
-  std::chrono::time_point<std::chrono::steady_clock> endTime;
-  int timeLimitSeconds;
-  bool running;
-
-  public:
-  Timer():timeLimitSeconds(0), running(false){}
-
-  void setTimeLimit(int seconds){
-    timeLimitSeconds = seconds;
-  }
-
-  void startTimer(){
-    startTime = std::chrono::steady_clock::now();
-    running = true;
-  }
-
-  void stopTimer(){
-    endTime = std::chrono::steady_clock::now();
-    running = false;
-  }
-
-// estos metodos si los saque de gpt lol
-  bool isTimeExceeded() {
-        if (running) {
-            auto currentTime = std::chrono::steady_clock::now();
-            std::chrono::duration<double> elapsedSeconds = currentTime - startTime;
-            return elapsedSeconds.count() > timeLimitSeconds;
-        } else {
-            std::chrono::duration<double> elapsedSeconds = endTime - startTime;
-            return elapsedSeconds.count() > timeLimitSeconds;
-        }
-    }
-
-    double getElapsedTime() const {
-        auto currentTime = std::chrono::steady_clock::now();
-        std::chrono::duration<double> elapsedSeconds = currentTime - startTime;
-        return elapsedSeconds.count();
-    }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
