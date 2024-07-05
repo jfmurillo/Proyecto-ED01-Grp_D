@@ -11,13 +11,13 @@ using std::string;
 using std::vector;
 
 class Timer {
-private:
+  private:
     std::chrono::time_point<std::chrono::steady_clock> startTime;
     std::chrono::time_point<std::chrono::steady_clock> endTime;
     int timeLimitSeconds;
     bool running;
 
-public:
+  public:
     Timer() : timeLimitSeconds(0), running(false) {}
 
     void setTimeLimit(int seconds) {
@@ -137,15 +137,9 @@ public:
     }
 };
 
-class GameMenu;
-
 class Menu {
 private:
     PlayerRecord record;
-    GameMenu* gameMenu;
-
-public:
-    Menu(GameMenu* gm) : gameMenu(gm) {}
 
     void newPlayerMenu() {
         std::cout << "=== Register a New Player ===" << std::endl;
@@ -208,17 +202,17 @@ public:
             }
             case 0:
                 return;
-            default:
+                default:
                 std::cout << "Invalid choice. Please try again." << std::endl;
         }
     }
 
+public:
     void showMenu() {
         while (true) {
             std::cout << "=== Main Menu ===" << std::endl;
             std::cout << "1. Register New Player" << std::endl;
             std::cout << "2. Manage Existing Players" << std::endl;
-            std::cout << "3. Go to Game Menu" << std::endl;
             std::cout << "0. Exit" << std::endl;
             std::cout << "Enter your choice: ";
             int choice;
@@ -230,11 +224,6 @@ public:
                     break;
                 case 2:
                     existingPlayerMenu();
-                    break;
-                case 3:
-                    if (gameMenu) {
-                        gameMenu->showGameMenu();
-                    }
                     break;
                 case 0:
                     std::cout << "Exiting program." << std::endl;
@@ -254,8 +243,6 @@ private:
     Menu mainMenu;
 
 public:
-    GameMenu() : mainMenu(this) {}
-
     void start() {
         std::cout << "=== Starting Game ===" << std::endl;
         std::cout << "Game started. Enjoy!" << std::endl;
