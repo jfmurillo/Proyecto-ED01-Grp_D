@@ -4,6 +4,7 @@
 #include <list>
 #include <iterator>
 #include <chrono>
+#include <thread>
 using std::list;
 using std::string;
 using std::vector;
@@ -201,11 +202,24 @@ private:
   Menu mainMenu;
 
   public:
+  Timer timer;
   void start(){
     std::cout << "=== Starting Game ===" << std::endl;
     std::cout << "Game started. Enjoy!" << std::endl;
-    // aqui va un mensaje con un timer de 2min para que el jugador empiece a presionar teclas 
-    // y vaya haciendo los combos
+    
+    timer.setTimeLimit(125);
+    std::cout << "Timer started: 2 minutes from now. GO!" << std::endl;
+
+    std::this_thread::sleep_for(std::chrono::seconds(126));
+    if (timer.isTimeExceeded()){
+      std::cout << "Time limit exceeded!" << std::endl;
+    }
+
+    timer.stopTimer();
+
+    std::cout << "Elapsed time: " << timer.getElapsedTime() << " seconds" << std::endl;
+
+    // falta el key input para las teclas y que vaya saliendo loos combos que hace
   }
 
   void trainingMode() {
