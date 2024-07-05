@@ -6,6 +6,9 @@
 #include <chrono>
 #include <thread>
 #include <cstdlib>
+#include <unordered_map>
+#include <queue>
+using std::queue;
 using std::list;
 using std::string;
 using std::vector;
@@ -316,6 +319,168 @@ public:
         }
     }
 };
+
+struct Node{
+    string name;
+    string sequence;
+    Node* next;
+
+    Node(const string& name, const string& sequence) : name(name), sequence(sequence), next(nullptr) {}
+};
+
+class Combo{
+    private:
+    Node* head;
+
+    public:
+    Combo(): head(nullptr){};
+
+    void createCombo(const string name, const string sequence){
+        Node* newNode = new Node(name, sequence);
+        if (!head) {
+            head = newNode;
+        } else {
+            Node* current = head;
+            while (current->next) {
+                current = current->next;
+            }
+            current->next = newNode;
+        }
+        std::cout << "Combo '" << name << "' created using: " << sequence << std::endl;
+    }
+
+    string obtainSequence(const string& name) const {
+        Node* current = head;
+        while (current) {
+            if (current->name == name) {
+                return current->sequence;
+            }
+            current = current->next;
+        }
+        return "Combo not found.";
+    }
+
+    void executeCombo(const string& name) {
+        Node* current = head;
+        while (current) {
+            if (current->name == name) {
+                std::cout << "Combo '" << name << "' with sequence: " << current->sequence << std::endl;
+                
+                return;
+            }
+            current = current->next;
+        }
+        std::cout << "Combo '" << name << "' not found." << std::endl;
+    }
+
+    void removeCombo(const string& name) {
+        if (!head) {
+            std::cout << "Combo list is empty." << std::endl;
+            return;
+        }
+        Node* current = head;
+        Node* prev = nullptr;
+        while (current) {
+            if (current->name == name) {
+                if (prev) {
+                    prev->next = current->next;
+                } else {
+                    head = current->next;
+                }
+                delete current;
+                std::cout << "Combo '" << name << "' deleted." << std::endl;
+                return;
+            }
+            prev = current;
+            current = current->next;
+        }
+        std::cout << "Combo '" << name << "' not found." << std::endl;
+    }
+
+    void listCombos() const {
+        if (!head) {
+            std::cout << "No combos on combo list." << std::endl;
+            return;
+        }
+        std::cout << "=== Combo List ===" << std::endl;
+        Node* current = head;
+        while (current) {
+            std::cout << "Combo: " << current->name << ", Sequence: " << current->sequence << std::endl;
+            current = current->next;
+        }
+    }
+
+    string findCombo(const string& sequence) const {
+        Node* current = head;
+        while (current) {
+            if (current->sequence == sequence) {
+                return current->name;
+            }
+            current = current->next;
+        }
+        return "Combo with sequence '" + sequence + "' not found.";
+    }
+
+    ~Combo() {
+        Node* current = head;
+        while (current) {
+            Node* next = current->next;
+            delete current;
+            current = next;
+        }
+        head = nullptr;
+    }
+
+    void checkAndExecuteCombo(const string& inputSequence) {
+        Node* current = head;
+        while (current) {
+            if (current->sequence == inputSequence) {
+                std::cout << "Combo: " << current->name << ". executing..." << std::endl;
+                executeCombo(current->name);
+                return;
+            }
+            current = current->next;
+        }
+        std::cout << "Combo not find using sequence: " << inputSequence << std::endl;
+    }
+};
+
+class KeyInput{
+    private:
+    queue<char> keyQueue;
+    Combo& comboManager;
+
+    public:
+    KeyInput(Combo& comboMgr) : comboManager(comboMgr) {}
+
+    void addKey(char key) {
+        keyQueue.push(key);
+        std::cout << "Key entered: " << key << std::endl;
+    }
+
+    string getCurrentSequence() const {
+        string sequence;
+        queue<char> tempQueue = keyQueue;
+        while (!tempQueue.empty()) {
+            sequence += tempQueue.front();
+            tempQueue.pop();
+        }
+        return sequence;
+    }
+
+    void processInput() {
+        string currentSequence = getCurrentSequence();
+        std::cout << "Actual sequence: " << currentSequence << std::endl;
+        comboManager.checkAndExecuteCombo(currentSequence);
+    }
+
+    void clearKeys() {
+        while (!keyQueue.empty()) {
+            keyQueue.pop();
+        }
+    }
+};
+
 
 int main() {
     GameMenu gameMenu;
