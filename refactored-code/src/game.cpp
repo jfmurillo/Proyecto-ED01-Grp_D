@@ -89,6 +89,10 @@ public:
     std::cout << "Not found" << std::endl;
     return -1;
   }
+
+  bool hasPlayers() const {
+        return !players.empty();
+    }
 };
 
 class Menu{
@@ -190,7 +194,72 @@ class Menu{
     }
 };
 
+class GameMenu{
+private:
+  PlayerRecord record;
+  Menu mainMenu;
 
+  public:
+  void start(){
+    std::cout << "=== Starting Game ===" << std::endl;
+    std::cout << "Game started. Enjoy!" << std::endl;
+    // aqui va un mensaje con un timer de 2min para que el jugador empiece a presionar teclas 
+    // y vaya haciendo los combos
+  }
+
+  void trainingMode() {
+        std::cout << "=== Training Mode ===" << std::endl;
+        std::cout << "Training mode activated. Practice makes perfect!" << std::endl;
+        // mismo de start, pero aqui debe implementarse algun comando para salirse del modo training
+        // y que vuelva al menu del juego
+    }
+
+    void exit() {
+        std::cout << "Exiting the game menu." << std::endl;
+        // aqui se deberia de volver al menu de inicio? 
+        std::exit(0); // aqui es para terminar el programa pero idk
+    }
+
+    void showGameMenu(){
+      while (true) {
+            std::cout << "=== Game Menu ===" << std::endl;
+            std::cout << "1. Start Game" << std::endl;
+            std::cout << "2. Training Mode" << std::endl;
+            std::cout << "3. Player Menu" << std::endl; 
+            std::cout << "0. Exit" << std::endl;
+            std::cout << "Enter your choice: ";
+            int choice;
+            std::cin >> choice;
+
+            switch (choice) {
+                case 1:
+                    if (record.hasPlayers()) {
+                        start();
+                    } else {
+                        std::cout << "You need to register at least one player before starting the game." << std::endl;
+                        mainMenu.showMenu();
+                    }
+                    break;
+                case 2:
+                    if (record.hasPlayers()) {
+                        trainingMode();
+                    } else {
+                        std::cout << "You need to register at least one player before entering training mode." << std::endl;
+                        mainMenu.showMenu();
+                    }
+                    break;
+                case 3:
+                    mainMenu.showMenu();
+                    break;
+                case 0:
+                    exit();
+                    break;
+                default:
+                    std::cout << "Invalid choice. Please try again." << std::endl;
+            }
+        }
+    }
+};
 
 
 
@@ -213,7 +282,7 @@ class Menu{
 
 
 int main() {
-  Menu menu;
-  menu.showMenu();
+  GameMenu gameMenu;
+  gameMenu.showGameMenu();
   return 0;
 };
