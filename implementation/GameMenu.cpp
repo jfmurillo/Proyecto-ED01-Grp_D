@@ -1,10 +1,24 @@
-#include "GameMenu.h"
-#include "KeyInput.h"
+#include "../header/GameMenu.h"
+#include "../header/Menu.h"
+#include "../header/KeyInput.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
 #include <cstdlib>
-#include "PlayerRecord.h"
+#include "../header/PlayerRecord.h"
+
+GameMenu::GameMenu() : mainMenu(nullptr) {
+    mainMenu = new Menu(record, *this);
+}
+
+GameMenu::~GameMenu() {
+    delete mainMenu;
+}
+
+// todo: revisar esto
+//void GameMenu::start() {
+//    mainMenu->showMenu();
+//}
 
 void GameMenu::start() {
     std::cout << "=== Starting Game ===" << std::endl;

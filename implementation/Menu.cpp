@@ -1,6 +1,9 @@
-#include "Menu.h"
-#include "GameMenu.h"
+#include "../header/Menu.h"
+#include "../header/GameMenu.h"
 #include <iostream>
+
+Menu::Menu(PlayerRecord& record, GameMenu& gameMenu)
+    : record(record), gameMenu(gameMenu) {}
 
 void Menu::newPlayerMenu() {
     std::cout << "=== Register a New Player ===" << std::endl;
