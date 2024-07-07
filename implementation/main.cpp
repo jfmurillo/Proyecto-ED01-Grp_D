@@ -4,12 +4,12 @@
 #include <iostream>
 
 int main() {
-    PlayerRecord playerRecord;
+    PlayerRecord playerRecord; 
     GameMenu gameMenu;
     Menu menu(playerRecord,gameMenu);
 
-    menu.showMenu();
-    //gameMenu.showGameMenu();
+
+    gameMenu.showGameMenu();
 
     std::cout << "=== Exiting Program ===" << std::endl;
     return 0;
