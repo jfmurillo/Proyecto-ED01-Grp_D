@@ -6,7 +6,7 @@
 int main() {
     PlayerRecord playerRecord;
     GameMenu gameMenu;
-    Menu menu(playerRecord, gameMenu);
+    Menu menu(playerRecord,gameMenu);
 
     menu.showMenu();
     //gameMenu.showGameMenu();

@@ -4,9 +4,9 @@
 #include "../header/Timer.h"
 #include "../header/Combo.h"
 #include "../header/PlayerRecord.h"
+#include "../header/Menu.h"
 
 class Menu;
-
 class GameMenu {
 private:
     Timer time;

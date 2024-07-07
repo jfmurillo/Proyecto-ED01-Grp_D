@@ -83,7 +83,7 @@ void GameMenu::showGameMenu() {
                     start();
                 } else {
                     std::cout << "You need to register at least one player before starting the game." << std::endl;
-                    mainMenu.showMenu();
+                    mainMenu->showMenu();
                 }
                 break;
             case 2:
@@ -91,7 +91,7 @@ void GameMenu::showGameMenu() {
                     trainingMode();
                 } else {
                     std::cout << "You need to register at least one player before entering training mode." << std::endl;
-                    mainMenu.showMenu();
+                    mainMenu->showMenu();
                 }
                 break;
             case 3:
