@@ -181,17 +181,16 @@ class Combo{
         return "Combo not found.";
     }
 
-    void executeCombo(const string& name) {
+    void executeCombo(const string& inputSequence) {
         Node* current = head;
         while (current) {
-            if (current->name == name) {
-                std::cout << "Combo '" << name << "' with sequence: " << current->sequence << std::endl;
-                
+            if (inputSequence.find(current->sequence) != string::npos) {
+                std::cout << "Combo '" << current->name << "' with sequence: " << current->sequence << std::endl;
                 return;
             }
             current = current->next;
         }
-        std::cout << "Combo '" << name << "' not found." << std::endl;
+        std::cout << "Combo not found using sequence: " << inputSequence << std::endl;
     }
 
     void removeCombo(const string& name) {
@@ -300,15 +299,19 @@ public:
         return '\0';
     }
 
-    void processInput() {
-        char firstKey = getFirstKeyPressed();
-        if (firstKey != '\0') {
-            addKey(firstKey);
-        }
+    // string currentSequence = getCurrentSequence();{
+    //     std::cout << "Actual sequence: " << currentSequence << std::endl;
+    //     comboManager.checkAndExecuteCombo(currentSequence);
+    //     clearKeys();
+    // }
 
+
+    void processInput() {
         string currentSequence = getCurrentSequence();
-        std::cout << "Actual sequence: " << currentSequence << std::endl;
-        comboManager.checkAndExecuteCombo(currentSequence);
+        //std::cout << "Current sequence: " << currentSequence << std::endl;
+        if (!currentSequence.empty()) {
+            comboManager.executeCombo(currentSequence);
+        }
         clearKeys();
     }
 
@@ -552,15 +555,11 @@ public:
     KeyInput keyInput(comboManager);
     char key = '\0';
 
+    // CHECK LATERR pt2
     // while (!time.isTimeExceeded()) {
-    //     firstKey = keyInput.getFirstKeyPressed();
-    //     if (firstKey != '\0') {
-    //         keyInput.addKey(firstKey);
-    //         std::cout << "First key pressed: " << firstKey << std::endl;
-    //     }
-    //     keyInput.processInput();
-    //     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    // }
+    //             keyInput.processInput();
+    //             std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    //         }
 
     while (!time.isTimeExceeded()) {
         std::cout << "Press a key: ";
