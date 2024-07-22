@@ -8,20 +8,21 @@
 #include <cstdlib>
 #include <unordered_map>
 #include <queue>
-#include <windows.h>
+#include "windows.h"
+
 using std::queue;
 using std::list;
 using std::string;
 using std::vector;
 
 class Timer {
-  private:
+private:
     std::chrono::time_point<std::chrono::steady_clock> startTime;
     std::chrono::time_point<std::chrono::steady_clock> endTime;
     int timeLimitSeconds;
     bool running;
 
-  public:
+public:
     Timer() : timeLimitSeconds(0), running(false) {}
 
     void setTimeLimit(int seconds) {
@@ -83,15 +84,6 @@ public:
         std::cout << "ID: " << nickname << ", Name: " << name << ", Last Name: " << lastName
                   << ", Email: " << email << ", Age: " << age << std::endl;
     }
-
-    Player getPlayerbyID(string nickname) {
-        std::cout << "Please enter player nickname: ";
-        return *this;
-    }
-
-    Player modifyPlayer(string nickname) {
-        return *this;
-    }
 };
 
 class PlayerRecord {
@@ -141,7 +133,7 @@ public:
     }
 };
 
-struct Node{
+struct Node {
     string name;
     string sequence;
     Node* next;
@@ -149,14 +141,14 @@ struct Node{
     Node(const string& name, const string& sequence) : name(name), sequence(sequence), next(nullptr) {}
 };
 
-class Combo{
-    private:
+class Combo {
+private:
     Node* head;
 
-    public:
-    Combo(): head(nullptr){};
+public:
+    Combo() : head(nullptr) {}
 
-    void createCombo(const string name, const string sequence){
+    void createCombo(const string name, const string sequence) {
         Node* newNode = new Node(name, sequence);
         if (!head) {
             head = newNode;
@@ -256,327 +248,243 @@ class Combo{
         while (current) {
             if (current->sequence == inputSequence) {
                 std::cout << "Combo: " << current->name << ". executing..." << std::endl;
-                executeCombo(current->name);
                 return;
             }
             current = current->next;
         }
-        std::cout << "Combo not find using sequence: " << inputSequence << std::endl;
+        std::cout << "Sequence not found in combo list." << std::endl;
     }
 };
 
 class KeyInput {
 private:
-    queue<char> keyQueue;
-    Combo& comboManager;
+    queue<string> keyQueue;
 
 public:
-    KeyInput(Combo& comboMgr) : comboManager(comboMgr) {}
-
-    void addKey(char key) {
+    void addKeyPress(const string& key) {
         keyQueue.push(key);
-        std::cout << "Key entered: " << key << std::endl;
     }
 
-    string getCurrentSequence() const {
-        string sequence;
-        queue<char> tempQueue = keyQueue;
-        while (!tempQueue.empty()) {
-            sequence += tempQueue.front();
-            tempQueue.pop();
+    string getFirstKeyPressed() {
+        if (keyQueue.empty()) {
+            return "";
         }
-        return sequence;
+        string firstKey = keyQueue.front();
+        keyQueue.pop();
+        return firstKey;
     }
 
-    char getFirstKeyPressed() {
-        for (int key = 8; key <= 255; ++key) {
-            if (GetAsyncKeyState(key) & 0x8000) {
-                if ((key >= 'A' && key <= 'Z') || (key >= 'a' && key <= 'z')) {
-                    return static_cast<char>(key);
-                }
-            }
-        }
-        return '\0';
-    }
-
-    // string currentSequence = getCurrentSequence();{
-    //     std::cout << "Actual sequence: " << currentSequence << std::endl;
-    //     comboManager.checkAndExecuteCombo(currentSequence);
-    //     clearKeys();
-    // }
-
-
-    void processInput() {
-        string currentSequence = getCurrentSequence();
-        //std::cout << "Current sequence: " << currentSequence << std::endl;
-        if (!currentSequence.empty()) {
-            comboManager.executeCombo(currentSequence);
-        }
-        clearKeys();
-    }
-
-    void clearKeys() {
+    string getKeySequence() {
+        string keySequence;
         while (!keyQueue.empty()) {
+            keySequence += keyQueue.front();
             keyQueue.pop();
         }
+        return keySequence;
     }
 };
-
 
 class GameMenu {
 private:
-    Timer time;
     PlayerRecord playerRecord;
     Combo comboManager;
     KeyInput keyInput;
+    Timer timer;
+
+    bool isTrainingModeActive;
+    bool trainingMode;
+    bool exitRequested;
+    bool runTimer;
+
+    void executeCombo() {
+        string sequence = keyInput.getKeySequence();
+        if (!sequence.empty()) {
+            comboManager.executeCombo(sequence);
+        }
+    }
+
+    void processTraining() {
+        std::cout << "Training mode activated.\n";
+        std::cout << "Press 'E' to end the game.\n";
+
+        char key;
+        while (trainingMode) {
+            std::cin >> key;
+            if (key == 'E' || key == 'e') {
+                std::cout << "Exiting game...\n";
+                trainingMode = false;
+                break;
+            }
+            keyInput.addKeyPress(string(1, key));
+            executeCombo();
+        }
+    }
+
+    void createPredefinedCombos() {
+        comboManager.createCombo("Combo1", "A");
+        comboManager.createCombo("Combo2", "AB");
+        comboManager.createCombo("Combo3", "ABC");
+        comboManager.createCombo("Combo4", "ABCD");
+        comboManager.createCombo("Combo5", "ABCDE");
+        comboManager.createCombo("Combo6", "ABCDEF");
+        comboManager.createCombo("Combo7", "ABCDEFG");
+        comboManager.createCombo("Combo8", "ABCDEFGH");
+    }
 
 public:
-    GameMenu() : keyInput(comboManager) {}
+    GameMenu() : isTrainingModeActive(false), trainingMode(false), exitRequested(false), runTimer(false) {}
 
     void showGameMenu() {
-        char option;
-        bool running = true;
-        while (running) {
-            std::cout << "====== Game Menu ======" << std::endl;
-            std::cout << "1. Game Settings" << std::endl;
-            std::cout << "2. Player settings" << std::endl;
-            std::cout << "3. Combo settings" << std::endl;
-            std::cout << "4. Exit" << std::endl;
-            std::cout << "Enter your choice: ";
-            std::cin >> option;
+        createPredefinedCombos(); 
 
-            switch (option) {
-                case '1':
-                    gameSettings();
-                    break;
-                case '2':
+        int choice;
+        do {
+            std::cout << "1. Player settings\n";
+            std::cout << "2. Combo settings\n";
+            std::cout << "3. Enter training mode\n";
+            std::cout << "4. Start game\n";
+            std::cout << "5. Exit\n";
+            std::cout << "Enter your choice: ";
+            std::cin >> choice;
+            std::cin.ignore(); 
+
+            switch (choice) {
+                case 1:
                     playerSettings();
                     break;
-                case '3':
+                case 2:
                     comboSettings();
                     break;
-                case '4':
-                    std::cout << "Exiting game menu..." << std::endl;
-                    running = false;
+                case 3:
+                    trainingMode = true;
+                    processTraining();
+                    break;
+                case 4:
+                    start();
+                    break;
+                case 5:
+                    exitRequested = true;
                     break;
                 default:
-                    std::cout << "Invalid option. Please try again." << std::endl;
-                    break;
+                    std::cout << "Invalid choice. Please try again.\n";
             }
-        }
+        } while (!exitRequested);
     }
 
     void playerSettings() {
-        char option;
-        while (true) {
-            std::cout << "====== Player Settings ======" << std::endl;
-            std::cout << "1. Register player" << std::endl;
-            std::cout << "2. Delete player" << std::endl;
-            std::cout << "3. Show player record" << std::endl;
-            std::cout << "4. Back to main menu" << std::endl;
+        int choice;
+        do {
+            std::cout << "Player Settings:\n";
+            std::cout << "1. Register new player\n";
+            std::cout << "2. Delete player\n";
+            std::cout << "3. Show player records\n";
+            std::cout << "4. Back to main menu\n";
             std::cout << "Enter your choice: ";
-            std::cin >> option;
+            std::cin >> choice;
+            std::cin.ignore();  
 
-            switch (option) {
-                case '1':
-                    registerPlayer();
+            switch (choice) {
+                case 1: {
+                    std::string nickname, name, lastName, email;
+                    int age;
+                    std::cout << "Enter nickname: ";
+                    std::getline(std::cin, nickname);
+                    std::cout << "Enter name: ";
+                    std::getline(std::cin, name);
+                    std::cout << "Enter last name: ";
+                    std::getline(std::cin, lastName);
+                    std::cout << "Enter email: ";
+                    std::getline(std::cin, email);
+                    std::cout << "Enter age: ";
+                    std::cin >> age;
+                    std::cin.ignore();  
+
+                    Player player(nickname, name, lastName, email, age);
+                    playerRecord.registerPlayer(player);
                     break;
-                case '2':
-                    deletePlayer();
+                }
+                case 2: {
+                    std::string nickname;
+                    std::cout << "Enter player nickname to delete: ";
+                    std::getline(std::cin, nickname);
+                    playerRecord.deletePlayer(nickname);
                     break;
-                case '3':
-                    showPlayerRecord();
+                }
+                case 3:
+                    playerRecord.showPlayerRecord();
                     break;
-                case '4':
+                case 4:
                     return;
                 default:
-                    std::cout << "Invalid option. Please try again." << std::endl;
-                    break;
+                    std::cout << "Invalid choice. Please try again.\n";
             }
-        }
-    }
-
-    void gameSettings(){
-        char option;
-        while (true) {
-            std::cout << "====== Game Menu ======" << std::endl;
-            std::cout << "1. Start Game" << std::endl;
-            std::cout << "2. Training Mode" << std::endl;
-            std::cout << "3. Back to main menu" << std::endl;
-            std::cout << "Enter your choice: ";
-            std::cin >> option;
-
-            switch (option) {
-                case '1':
-                    if (playerRecord.hasPlayers()){
-                        start();
-                    } else {
-                        std::cout << "You need to register at least one player before starting the game." << std::endl;
-                        playerSettings();
-                    }
-                    break;
-                case '2':
-                    trainingMode();
-                    break;
-                case '3':
-                    return;
-                default:
-                    std::cout << "Invalid option. Please try again." << std::endl;
-                    break;
-            }
-        }
-    }
-
-    void trainingMode() {
-        std::cout << "=== Training Mode ===" << std::endl;
-        std::cout << "Training mode activated." << std::endl;
-        KeyInput keyInput(comboManager);
-
-        while (true) {
-            std::cout << "Enter key (press 'x' to exit training mode): ";
-            char key;
-            std::cin >> key;
-
-            if (key == 'x' || key == 'X') {
-                break;
-            }
-
-            keyInput.addKey(key);
-            keyInput.processInput();
-        }
-
-        std::cout << "Training mode ended." << std::endl;
-    }
-
-    void registerPlayer() {
-        string nickname, name, lastName, email;
-        int age;
-
-        std::cout << "Enter nickname: ";
-        std::cin >> nickname;
-        std::cout << "Enter name: ";
-        std::cin >> name;
-        std::cout << "Enter last name: ";
-        std::cin >> lastName;
-        std::cout << "Enter email: ";
-        std::cin >> email;
-        std::cout << "Enter age: ";
-        std::cin >> age;
-
-        Player player(nickname, name, lastName, email, age);
-        playerRecord.registerPlayer(player);
-        std::cout << "Player registered successfully." << std::endl;
-    }
-
-    void deletePlayer() {
-        string nickname;
-        std::cout << "Enter player nickname to delete: ";
-        std::cin >> nickname;
-        if (playerRecord.deletePlayer(nickname)) {
-            std::cout << "Player deleted successfully." << std::endl;
-        } else {
-            std::cout << "Player not found." << std::endl;
-        }
-    }
-
-    void showPlayerRecord() const {
-        playerRecord.showPlayerRecord();
+        } while (true);
     }
 
     void comboSettings() {
-        char option;
-        while (true) {
-            std::cout << "====== Combo Settings ======" << std::endl;
-            std::cout << "1. Create combo" << std::endl;
-            std::cout << "2. Execute combo" << std::endl;
-            std::cout << "3. Remove combo" << std::endl;
-            std::cout << "4. List combos" << std::endl;
-            std::cout << "5. Back to main menu" << std::endl;
+        int choice;
+        do {
+            std::cout << "Combo Settings:\n";
+            std::cout << "1. Create new combo\n";
+            std::cout << "2. List combos\n";
+            std::cout << "3. Remove combo\n";
+            std::cout << "4. Back to main menu\n";
             std::cout << "Enter your choice: ";
-            std::cin >> option;
+            std::cin >> choice;
+            std::cin.ignore();  
 
-            switch (option) {
-                case '1':
-                    createCombo();
+            switch (choice) {
+                case 1: {
+                    std::string name, sequence;
+                    std::cout << "Enter combo name: ";
+                    std::getline(std::cin, name);
+                    std::cout << "Enter combo sequence: ";
+                    std::getline(std::cin, sequence);
+
+                    comboManager.createCombo(name, sequence);
                     break;
-                case '2':
-                    executeCombo();
+                }
+                case 2:
+                    comboManager.listCombos();
                     break;
-                case '3':
-                    removeCombo();
+                case 3: {
+                    std::string name;
+                    std::cout << "Enter combo name to delete: ";
+                    std::getline(std::cin, name);
+                    comboManager.removeCombo(name);
                     break;
-                case '4':
-                    listCombos();
-                    break;
-                case '5':
+                }
+                case 4:
                     return;
                 default:
-                    std::cout << "Invalid option. Please try again." << std::endl;
-                    break;
+                    std::cout << "Invalid choice. Please try again.\n";
             }
-        }
-    }
-
-    void createCombo() {
-        string name, sequence;
-        std::cout << "Enter combo name: ";
-        std::cin >> name;
-        std::cout << "Enter combo sequence: ";
-        std::cin >> sequence;
-        comboManager.createCombo(name, sequence);
-    }
-
-    void executeCombo() {
-        string name;
-        std::cout << "Enter combo name to execute: ";
-        std::cin >> name;
-        comboManager.executeCombo(name);
-    }
-
-    void removeCombo() {
-        string name;
-        std::cout << "Enter combo name to remove: ";
-        std::cin >> name;
-        comboManager.removeCombo(name);
-    }
-
-    void listCombos() const {
-        comboManager.listCombos();
+        } while (true);
     }
 
     void start() {
-    std::cout << "=== Starting Game ===" << std::endl;
-    std::cout << "Game started. Enjoy!" << std::endl;
+        std::cout << "=== Starting Game ===" << std::endl;
+        std::cout << "Game started. Enjoy!" << std::endl;
 
-    time.setTimeLimit(10);
-    time.startTimer();
-    std::cout << "Timer started: 1 minute from now. GO!" << std::endl;
+        timer.setTimeLimit(60);  
+        timer.startTimer();
+        std::cout << "Timer started: 1 minute from now. GO!" << std::endl;
 
-    KeyInput keyInput(comboManager);
-    char key = '\0';
+        KeyInput keyInput;
+        char key = '\0';
 
-    // CHECK LATERR pt2
-    // while (!time.isTimeExceeded()) {
-    //             keyInput.processInput();
-    //             std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    //         }
+        while (!timer.isTimeExceeded()) {
+            std::cout << "Press a key: ";
+            std::cin >> key;
+            keyInput.addKeyPress(string(1, key));  
+            executeCombo();
+        }
 
-    while (!time.isTimeExceeded()) {
-        std::cout << "Press a key: ";
-        std::cin >> key;
-        keyInput.addKey(key);
-        keyInput.processInput();
-    }
-
-        time.stopTimer();
+        timer.stopTimer();
         std::cout << "Time limit exceeded!" << std::endl;
-        std::cout << "Elapsed time: " << time.getElapsedTime() << " seconds" << std::endl;
+        std::cout << "Elapsed time: " << timer.getElapsedTime() << " seconds" << std::endl;
     }
-
 };
-
-
-
 
 int main() {
     GameMenu gameMenu;
