@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <unordered_map>
 #include "windows.h"
-hhh
+
 using std::list;
 using std::string;
 using std::vector;
@@ -54,6 +54,94 @@ public:
         return elapsedSeconds.count();
     }
 };
+
+class CustomQueue {
+private:
+    queue<string> internalQueue;
+
+public:
+    // Constructor por defecto
+    CustomQueue() {}
+
+    // Añadir un elemento a la cola
+    void enqueue(const string& element) {
+        internalQueue.push(element);
+        std::cout << "Element " << element << " added to the queue.\n";
+    }
+
+    // Eliminar el primer elemento de la cola
+    string dequeue() {
+        if (internalQueue.empty()) {
+            std::cout << "Queue is empty. Cannot dequeue.\n";
+            return "";
+        } else {
+            string frontElement = internalQueue.front();
+            internalQueue.pop();
+            std::cout << "Element " << frontElement << " removed from the queue.\n";
+            return frontElement;
+        }
+    }
+
+    // Verificar si la cola está vacía
+    bool isEmpty() const {
+        return internalQueue.empty();
+    }
+
+    // Obtener el primer elemento de la cola sin eliminarlo
+    string front() const {
+        if (internalQueue.empty()) {
+            std::cout << "Queue is empty.\n";
+            return "";
+        } else {
+            return internalQueue.front();
+        }
+    }
+
+    // Obtener el tamaño de la cola
+    size_t size() const {
+        return internalQueue.size();
+    }
+
+    // Mostrar los elementos de la cola
+    void displayQueue() const {
+        if (internalQueue.empty()) {
+            std::cout << "Queue is empty.\n";
+        } else {
+            std::queue<string> tempQueue = internalQueue;
+            std::cout << "Queue elements: ";
+            while (!tempQueue.empty()) {
+                std::cout << tempQueue.front() << " ";
+                tempQueue.pop();
+            }
+            std::cout << std::endl;
+        }
+    }
+};
+
+// Código de prueba para la clase CustomQueue
+int main() {
+    CustomQueue myQueue;
+
+    myQueue.enqueue("A");
+    myQueue.enqueue("B");
+    myQueue.enqueue("C");
+
+    myQueue.displayQueue();
+
+    myQueue.dequeue();
+    myQueue.displayQueue();
+
+    std::cout << "Front element: " << myQueue.front() << std::endl;
+    std::cout << "Queue size: " << myQueue.size() << std::endl;
+    std::cout << "Is queue empty? " << (myQueue.isEmpty() ? "Yes" : "No") << std::endl;
+
+    return 0;
+}
+
+
+
+
+
 
 class Player {
 private:
