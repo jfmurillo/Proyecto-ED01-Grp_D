@@ -7,10 +7,8 @@
 #include <thread>
 #include <cstdlib>
 #include <unordered_map>
-#include <queue>
 #include "windows.h"
 
-using std::queue;
 using std::list;
 using std::string;
 using std::vector;
@@ -56,6 +54,59 @@ public:
         return elapsedSeconds.count();
     }
 };
+
+template <typename T>
+class Queque {
+private:
+    list<T> elements;
+
+public:
+    void enqueue(T value) {
+        elements.push_back(value);
+    }
+
+    T dequeue() {
+        if (!elements.empty()) {
+            T frontElement = elements.front();
+            elements.pop_front();
+            return frontElement;
+        } else {
+            throw std::out_of_range("La cola está vacía.");
+        }
+    }
+
+    T peek() {
+        if (!elements.empty()) {
+            return elements.front();
+        } else {
+            throw std::out_of_range("La cola está vacía.");
+        }
+    }
+
+    bool isEmpty() {
+        return elements.empty();
+    }
+
+    int size() {
+        return elements.size();
+    }
+    void printQueue() const {
+        if (elements.empty()) {
+            std::cout << "La cola está vacía." << std::endl;
+        } else {
+            std::cout << "Elementos en la cola: ";
+            for (const auto& element : elements) {
+                std::cout << element << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+
+};
+
+
+
 
 class Player {
 private:
@@ -255,34 +306,31 @@ public:
         std::cout << "Sequence not found in combo list." << std::endl;
     }
 };
-
 class KeyInput {
 private:
-    queue<string> keyQueue;
+    Queque<string> keyQueue;  // Usamos Queque en lugar de queue estándar
 
 public:
     void addKeyPress(const string& key) {
-        keyQueue.push(key);
+        keyQueue.enqueue(key);
     }
 
     string getFirstKeyPressed() {
-        if (keyQueue.empty()) {
+        if (keyQueue.isEmpty()) {
             return "";
         }
-        string firstKey = keyQueue.front();
-        keyQueue.pop();
-        return firstKey;
+        return keyQueue.dequeue();
     }
 
     string getKeySequence() {
         string keySequence;
-        while (!keyQueue.empty()) {
-            keySequence += keyQueue.front();
-            keyQueue.pop();
+        while (!keyQueue.isEmpty()) {
+            keySequence += keyQueue.dequeue();
         }
         return keySequence;
     }
 };
+
 
 class GameMenu {
 private:
