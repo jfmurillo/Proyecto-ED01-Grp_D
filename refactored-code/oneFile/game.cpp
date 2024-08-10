@@ -56,21 +56,12 @@ public:
         return elapsedSeconds.count();
     }
 };
-class CustomQueue {
+
+class Queque {
 private:
-    queue<string> internalQueue;
+    list<T> elements;
 
-public:
-   
-    CustomQueue() {}
 
-   
-    void enqueue(const string& element) {
-        internalQueue.push(element);
-        std::cout << "Element " << element << " added to the queue.\n";
-    }
-class queque{
-    };
 
 
 
