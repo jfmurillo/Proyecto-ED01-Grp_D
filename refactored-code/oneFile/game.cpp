@@ -318,7 +318,8 @@ public:
         }
         return keySequence;
     }
-}
+};
+
 
 class GameMenu {
 private:
