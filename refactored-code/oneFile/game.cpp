@@ -57,8 +57,42 @@ public:
     }
 };
 
-class queque{
-    };
+template <typename T>
+class Queque {
+private:
+    list<T> elements;
+
+public:
+    void enqueue(T value) {
+        elements.push_back(value);
+    }
+
+    T dequeue() {
+        if (!elements.empty()) {
+            T frontElement = elements.front();
+            elements.pop_front();
+            return frontElement;
+        } else {
+            throw std::out_of_range("La cola está vacía.");
+        }
+    }
+
+    T peek() {
+        if (!elements.empty()) {
+            return elements.front();
+        } else {
+            throw std::out_of_range("La cola está vacía.");
+        }
+    }
+
+    bool isEmpty() {
+        return elements.empty();
+    }
+
+    int size() {
+        return elements.size();
+    }
+};
 
 
 
