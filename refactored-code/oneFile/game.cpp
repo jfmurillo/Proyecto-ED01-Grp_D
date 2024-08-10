@@ -7,10 +7,8 @@
 #include <thread>
 #include <cstdlib>
 #include <unordered_map>
-#include <queue>
 #include "windows.h"
 
-using std::queue;
 using std::list;
 using std::string;
 using std::vector;
@@ -92,6 +90,19 @@ public:
     int size() {
         return elements.size();
     }
+    void printQueue() const {
+        if (elements.empty()) {
+            std::cout << "La cola está vacía." << std::endl;
+        } else {
+            std::cout << "Elementos en la cola: ";
+            for (const auto& element : elements) {
+                std::cout << element << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+
 };
 
 
