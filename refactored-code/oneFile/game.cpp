@@ -56,7 +56,7 @@ public:
 };
 
 template <typename T>
-class Queque {
+class Queue {
 private:
     list<T> elements;
 
@@ -71,7 +71,7 @@ public:
             elements.pop_front();
             return frontElement;
         } else {
-            throw std::out_of_range("La cola está vacía.");
+            throw std::out_of_range("Queue is empty");
         }
     }
 
@@ -79,7 +79,7 @@ public:
         if (!elements.empty()) {
             return elements.front();
         } else {
-            throw std::out_of_range("La cola está vacía.");
+            throw std::out_of_range("Queue is empty");
         }
     }
 
@@ -92,9 +92,8 @@ public:
     }
     void printQueue() const {
         if (elements.empty()) {
-            std::cout << "La cola está vacía." << std::endl;
+            std::cout << "Queue is empty" << std::endl;
         } else {
-            std::cout << "Elementos en la cola: ";
             for (const auto& element : elements) {
                 std::cout << element << " ";
             }
@@ -104,8 +103,6 @@ public:
 
 
 };
-
-
 
 
 class Player {
@@ -308,7 +305,7 @@ public:
 };
 class KeyInput {
 private:
-    Queque<string> keyQueue;  // Usamos Queque en lugar de queue estándar
+    Queue<string> keyQueue;
 
 public:
     void addKeyPress(const string& key) {
