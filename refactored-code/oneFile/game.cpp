@@ -221,17 +221,38 @@ public:
         return "Combo not found.";
     }
 
-    void executeCombo(const string& inputSequence) {
-        Node* current = head;
-        while (current) {
-            if (inputSequence.find(current->sequence) != string::npos) {
-                std::cout << "Combo '" << current->name << "' with sequence: " << current->sequence << std::endl;
-                return;
+    bool checkAndExecuteCombo(const std::string& inputSequence) {
+    Node* current = head;
+
+    std::cout << "Input Sequence: " << inputSequence << std::endl;
+
+    // Primero, encuentra el combo más largo que coincida con la secuencia
+    std::string longestMatch = "";
+    Node* bestMatch = nullptr;
+
+    while (current) {
+        std::cout << "Checking against combo sequence: " << current->sequence << std::endl;
+        if (inputSequence.find(current->sequence) != std::string::npos) {
+            if (current->sequence.length() > longestMatch.length()) {
+                longestMatch = current->sequence;
+                bestMatch = current;
             }
-            current = current->next;
         }
-        std::cout << "Combo not found using sequence: " << inputSequence << std::endl;
+        current = current->next;
     }
+
+    if (bestMatch) {
+        std::cout << "Combo '" << bestMatch->name << "' with sequence: " << bestMatch->sequence << std::endl;
+        return true;
+    } else {
+        std::cout << "Secuencia no encontrada en la lista de combos." << std::endl;
+        return false;
+    }
+}
+
+
+
+
 
     void removeCombo(const string& name) {
         if (!head) {
@@ -290,18 +311,6 @@ public:
         }
         head = nullptr;
     }
-
-    void checkAndExecuteCombo(const string& inputSequence) {
-        Node* current = head;
-        while (current) {
-            if (current->sequence == inputSequence) {
-                std::cout << "Combo: " << current->name << ". executing..." << std::endl;
-                return;
-            }
-            current = current->next;
-        }
-        std::cout << "Sequence not found in combo list." << std::endl;
-    }
 };
 class KeyInput {
 private:
@@ -344,7 +353,7 @@ private:
     void executeCombo() {
         string sequence = keyInput.getKeySequence();
         if (!sequence.empty()) {
-            comboManager.executeCombo(sequence);
+            comboManager.checkAndExecuteCombo(sequence);
         }
     }
 
@@ -515,20 +524,30 @@ public:
         timer.startTimer();
         std::cout << "Timer started: 1 minute from now. GO!" << std::endl;
 
-        KeyInput keyInput;
-        char key = '\0';
+
+        std::string inputSequence;
+        char key;
+
+        //KeyInput keyInput;
+        //char key = '\0';
 
         while (!timer.isTimeExceeded()) {
             std::cout << "Press a key: ";
             std::cin >> key;
-            keyInput.addKeyPress(string(1, key));  
-            executeCombo();
+            inputSequence += key;
+
+            if (comboManager.checkAndExecuteCombo(inputSequence)) {
+            inputSequence.clear();  // Limpiar la secuencia si se ejecutó un combo
+
+            //keyInput.addKeyPress(string(1, key));  
+            //executeCombo();
         }
 
         timer.stopTimer();
         std::cout << "Time limit exceeded!" << std::endl;
         std::cout << "Elapsed time: " << timer.getElapsedTime() << " seconds" << std::endl;
     }
+  }
 };
 
 int main() {
