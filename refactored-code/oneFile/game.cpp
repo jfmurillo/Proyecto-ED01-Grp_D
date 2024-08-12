@@ -8,10 +8,13 @@
 #include <cstdlib>
 #include <unordered_map>
 #include "windows.h"
+#include <conio.h>
 
 using std::list;
 using std::string;
 using std::vector;
+
+
 
 class Timer {
 private:
@@ -226,12 +229,11 @@ public:
 
     std::cout << "Input Sequence: " << inputSequence << std::endl;
 
-    // Primero, encuentra el combo más largo que coincida con la secuencia
     std::string longestMatch = "";
     Node* bestMatch = nullptr;
 
     while (current) {
-        std::cout << "Checking against combo sequence: " << current->sequence << std::endl;
+        // std::cout << "Checking against combo sequence: " << current->sequence << std::endl;
         if (inputSequence.find(current->sequence) != std::string::npos) {
             if (current->sequence.length() > longestMatch.length()) {
                 longestMatch = current->sequence;
@@ -245,12 +247,10 @@ public:
         std::cout << "Combo '" << bestMatch->name << "' with sequence: " << bestMatch->sequence << std::endl;
         return true;
     } else {
-        std::cout << "Secuencia no encontrada en la lista de combos." << std::endl;
+        std::cout << "Sequence not found in combo list." << std::endl;
         return false;
     }
 }
-
-
 
 
 
@@ -357,22 +357,25 @@ private:
         }
     }
 
-    void processTraining() {
-        std::cout << "Training mode activated.\n";
-        std::cout << "Press 'E' to end the game.\n";
+void processTraining() {
+    std::cout << "Training mode activated.\n";
+    std::cout << "Press 'E' to end the training mode.\n";
 
-        char key;
-        while (trainingMode) {
-            std::cin >> key;
+    char key;
+    while (trainingMode) {
+        if (_kbhit()) { 
+            key = _getch(); 
             if (key == 'E' || key == 'e') {
-                std::cout << "Exiting game...\n";
+                std::cout << "Exiting training mode...\n";
                 trainingMode = false;
                 break;
             }
-            keyInput.addKeyPress(string(1, key));
+            keyInput.addKeyPress(std::string(1, key));
             executeCombo();
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+}
 
     void createPredefinedCombos() {
         comboManager.createCombo("Combo1", "A");
