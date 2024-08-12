@@ -405,6 +405,11 @@ public:
             std::cin >> choice;
             std::cin.ignore(); 
 
+            if (choice != 1 && !playerRecord.hasPlayers()) {
+            std::cout << "You must register at least one player before proceeding.\n";
+            continue;
+        }
+
             switch (choice) {
                 case 1:
                     playerSettings();
