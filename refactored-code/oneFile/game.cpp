@@ -527,29 +527,18 @@ public:
         timer.startTimer();
         std::cout << "Timer started: 1 minute from now. GO!" << std::endl;
 
-
-        std::string inputSequence;
-        char key;
-
-        //KeyInput keyInput;
-        //char key = '\0';
-
         while (!timer.isTimeExceeded()) {
-            std::cout << "Press a key: ";
-            std::cin >> key;
-            inputSequence += key;
-
-            if (comboManager.checkAndExecuteCombo(inputSequence)) {
-            inputSequence.clear();  // Limpiar la secuencia si se ejecutó un combo
-
-            //keyInput.addKeyPress(string(1, key));  
-            //executeCombo();
+        if (_kbhit()) { 
+            char key = _getch(); 
+            keyInput.addKeyPress(std::string(1, key));  
+            executeCombo();
         }
-
-        timer.stopTimer();
-        std::cout << "Time limit exceeded!" << std::endl;
-        std::cout << "Elapsed time: " << timer.getElapsedTime() << " seconds" << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); 
     }
+
+    timer.stopTimer();
+    std::cout << "Time limit exceeded!" << std::endl;
+    std::cout << "Elapsed time: " << timer.getElapsedTime() << " seconds" << std::endl;
   }
 };
 
